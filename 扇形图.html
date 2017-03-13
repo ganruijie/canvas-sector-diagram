@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<script>
+    var cv = document.querySelector("#cv");
+    cv.width = 600;
+    cv.height = 400;
+    cv.style.border = "1px solid red";
+
+    var ctx = cv.getContext("2d");
+
+    // 角度转弧度
+    var toRadian = function(angle) {
+        return angle / 180 * Math.PI;
+    };
+    // 弧度转角度
+    var toAngle = function(radian) {
+        return radian / Math.PI * 180;
+    };
+    
+    var dataArr = [{
+        "value": .1,		// 每一个数据占用的比例
+        "color": "orange",	// 绘制扇形的颜色
+        "title": "米国"	// 文字
+    },{
+        "value": .1,
+        "color": "pink",
+        "title": "公务员"
+    },{
+        "value": .1,
+        "color": "gray",
+        "title": "加拿大"
+    },{
+        "value": .1,
+        "color": "#909090",
+        "title": "德国战车"
+    },{
+        "value": .2,
+        "color": "red",
+        "title": "乌克兰美女"
+    },{
+        "value": .2,
+        "color": "blue",
+        "title": "中国程序员"
+    },{
+        "value": .1,
+        "color": "red",
+        "title": "程序员++++++"
+    },{
+        "value": .1,
+        "color": "#abc",
+        "title": "老司机"
+    }];
+    
+    var startX=cv.width/2,
+            startY=cv.height/2,
+            r=150,
+            padding=20,
+            step= 0,
+            textpadding=10,
+            startAngle =-90;
+    dataArr.forEach(function (data) {
+        ctx.beginPath();
+        step=data.value*360;
+        ctx.moveTo(startX,startY);
+        ctx.arc(startX,startY,r,toRadian(startAngle),toRadian(startAngle+step));
+        ctx.fillStyle=data.color;
+        ctx.fill();
+
+        ctx.beginPath();
+        var lineAngle=startAngle + step/2;
+        var lineX0=startX+(r+padding)*Math.cos(toRadian(lineAngle));
+        var lineY0=startY+(r+padding)*Math.sin(toRadian(lineAngle));
+        ctx.moveTo(startX,startY);
+        ctx.lineTo(lineX0,lineY0);
+        ctx.strokeStyle=data.color;
+        ctx.stroke();
+
+        ctx.beginPath();
+        var textWidth=ctx.measureText(data.title).width;
+        ctx.moveTo(lineX0,lineY0);
+        if(lineX0<startX){
+            textWidth=-textWidth;
+            textpadding=-10;
+            ctx.textAlign='right';
+        }
+        ctx.lineTo(lineX0+textWidth+textpadding,lineY0);
+        ctx.strokeStyle=data.color;
+        ctx.stroke();
+        ctx.fillText(data.title,lineX0+textpadding,lineY0- Math.abs(textpadding));
+        startAngle+=step;
+    });
+</script>
+
+</body>
+</html>
